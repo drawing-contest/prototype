@@ -51,13 +51,14 @@ function App() {
       </div>
       <div>
         <canvas
+          className='drawing-area'
           ref={canvasRef}
           onMouseEnter={(e) => setPos(e)}
           onMouseMove={(e) => draw(e)}
           onMouseDown={(e) => setPos(e)}
         ></canvas>
         <div
-          // className='controlpanel'
+          className='control-panel'
           style={{
             position: 'absolute',
             top: '0',
