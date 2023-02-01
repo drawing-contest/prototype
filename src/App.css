@@ -27,8 +27,8 @@
 .App-link {
   color: #61dafb;
 }
-#drawing-area {
-  border: 1px solid blue;
+.drawing-area {
+  border: 1px solid black;
 } 
 
 @keyframes App-logo-spin {

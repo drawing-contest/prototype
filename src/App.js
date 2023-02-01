@@ -7,14 +7,17 @@ function App() {
   const [canvasCTX, setCanvasCTX] = useState(null);
   const [color, setColor] = useState('#000000');
   const [size, setSize] = useState(10);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     // console.log(canvasCTX);
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    console.log(ctx);
+    // canvas.width = window.innerWidth;
+    // canvas.height = window.innerHeight;
+    canvas.width = 500;
+    canvas.height = 500;
+    // console.log(ctx);
     setCanvasCTX(ctx);
   }, [canvasRef]);
 
@@ -29,7 +32,7 @@ function App() {
   const draw = (e) => {
     if (e.buttons !== 1) return;
     const ctx = canvasCTX;
-    console.log(ctx);
+    // console.log(ctx);
     ctx.beginPath();
     ctx.moveTo(mouseData.x, mouseData.y);
     setMouseData({
@@ -43,6 +46,10 @@ function App() {
     ctx.lineCap = 'round';
     ctx.stroke();
   };
+  if (image.data) {
+    console.log(image);
+  }
+
 
   return (
     <>
@@ -51,7 +58,7 @@ function App() {
       </div>
       <div>
         <canvas
-          className='drawing-area'
+          id='drawing-area'
           ref={canvasRef}
           onMouseEnter={(e) => setPos(e)}
           onMouseMove={(e) => draw(e)}
@@ -60,7 +67,7 @@ function App() {
         <div
           className='control-panel'
           style={{
-            position: 'absolute',
+            // position: 'absolute',
             top: '0',
             left: '0',
             width: '100%',
@@ -94,7 +101,23 @@ function App() {
           >
                     Clear
           </button>
+          <button
+            onClick={() => {
+              const ctx = canvasCTX;
+              const myImageData = ctx.getImageData(
+                0,
+                0,
+                canvasRef.current.width,
+                canvasRef.current.height
+              );
+              setImage(myImageData);
+            }}
+          >
+                    Save?
+          </button>
         </div>
+      </div>
+      <div>
       </div>
     </>
 
