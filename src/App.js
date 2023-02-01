@@ -46,8 +46,14 @@ function App() {
     ctx.lineCap = 'round';
     ctx.stroke();
   };
-  if (image.data) {
-    console.log(image);
+  let img;
+  if (img) {
+    let blob = new Blob([image.buffer], { type: 'image/jpeg' });
+    let urlCreator = window.URL || window.webkitURL;
+    let imageUrl = urlCreator.createObjectU (blob);
+    let img = document.querySelector('#photo');
+    img.src = imageUrl;
+    console.log(imageUrl);
   }
 
 
@@ -116,8 +122,8 @@ function App() {
                     Save?
           </button>
         </div>
-      </div>
-      <div>
+        <img src={img}>
+        </img>
       </div>
     </>
 
