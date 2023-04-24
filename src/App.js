@@ -8,8 +8,9 @@ function App() {
   const [color, setColor] = useState('#000000');
   const [size, setSize] = useState(10);
   const [image, setImage] = useState(null);
+  // const [imagedata, setImageData] = useState();
+  let imageData = null;
 
-  let myImageData;
   useEffect(() => {
     const canvas = canvasRef.current;
     // console.log(canvasCTX);
@@ -64,6 +65,36 @@ function App() {
     console.log(imageUrl);
   }
 
+  function putImageData(
+    ctx,
+    imageData,
+    dx,
+    dy,
+    dirtyX,
+    dirtyY,
+    dirtyWidth,
+    dirtyHeight
+  ) {
+    const data = imageData.data;
+    const height = imageData.height;
+    const width = imageData.width;
+    dirtyX = dirtyX || 0;
+    dirtyY = dirtyY || 0;
+    dirtyWidth = dirtyWidth !== undefined ? dirtyWidth : width;
+    dirtyHeight = dirtyHeight !== undefined ? dirtyHeight : height;
+    const limitBottom = dirtyY + dirtyHeight;
+    const limitRight = dirtyX + dirtyWidth;
+    for (let y = dirtyY; y < limitBottom; y++) {
+      for (let x = dirtyX; x < limitRight; x++) {
+        const pos = y * width + x;
+        ctx.fillStyle = `rgba(${data[pos * 4 + 0]}, ${data[pos * 4 + 1]}, ${
+          data[pos * 4 + 2]
+        }, ${data[pos * 4 + 3] / 255})`;
+        ctx.fillRect(x + dx, y + dy, 1, 1);
+      }
+    }
+  }
+
 
   return (
     <>
@@ -116,26 +147,32 @@ function App() {
                     Clear
           </button>
           
-          <button
+          <button 
             onClick={() => {
               const ctx = canvasCTX;
-              const myImageData = ctx.getImageData(0, 0, 500, 500);
+              const imageDataYes = ctx.getImageData(0, 0, 500, 500);
               // imageData is image object, imageData.data gives Uint8ClampedArray, imageData.height = 500, imageData.width = 500  
-              console.log(myImageData);
+              imageData = imageDataYes;
+              console.log(imageData);
             }}
           >
                     Save?
           </button>
-          <button
-            onClick={(myImageData) => {
+          <button 
+            onClick={() => {
               const ctx = canvasCTX;
+              console.log(imageData);
               ctx.clearRect(
                 0,
                 0,
                 canvasRef.current.width,
                 canvasRef.current.height
               );
-              ctx.putImageData(myImageData, 500, 500);
+              ctx.fillRect(0, 0, 500, 500);
+              putImageData(ctx, imageData, 0, 0, 0, 0, 500, 500);
+
+              // const ctx = canvasCTX;
+              // ctx.putImageData(imageData, 500, 500);
             }}
           >
                     Restore
