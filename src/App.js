@@ -9,7 +9,7 @@ function App() {
   const [size, setSize] = useState(10);
   const [image, setImage] = useState(null);
   // const [imagedata, setImageData] = useState();
-  let imageData = null;
+  let restoreImageData = null;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -152,8 +152,8 @@ function App() {
               const ctx = canvasCTX;
               const imageDataYes = ctx.getImageData(0, 0, 500, 500);
               // imageData is image object, imageData.data gives Uint8ClampedArray, imageData.height = 500, imageData.width = 500  
-              imageData = imageDataYes;
-              console.log(imageData);
+              restoreImageData = imageDataYes;
+              console.log(restoreImageData);
             }}
           >
                     Save?
@@ -161,7 +161,7 @@ function App() {
           <button 
             onClick={() => {
               const ctx = canvasCTX;
-              console.log(imageData);
+              console.log(restoreImageData);
               ctx.clearRect(
                 0,
                 0,
@@ -170,7 +170,7 @@ function App() {
               );
               // ctx.fillRect(0, 0, 500, 500);
               console.log('cleared');
-              putImageData(ctx, imageData, 0, 0, 0, 0, 500, 500);
+              putImageData(ctx, restoreImageData, 0, 0, 0, 0, 500, 500);
 
               // const ctx = canvasCTX;
               // ctx.putImageData(imageData, 500, 500);
