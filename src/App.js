@@ -9,6 +9,7 @@ function App() {
   const [size, setSize] = useState(10);
   const [image, setImage] = useState(null);
 
+  let myImageData;
   useEffect(() => {
     const canvas = canvasRef.current;
     // console.log(canvasCTX);
@@ -44,6 +45,13 @@ function App() {
     ctx.lineWidth = size;
     // Set the line cap to round
     ctx.lineCap = 'round';
+
+
+    // find whats being saved per stroke
+    // console.log(ctx);
+    //
+
+
     ctx.stroke();
   };
   let img;
@@ -107,19 +115,30 @@ function App() {
           >
                     Clear
           </button>
+          
           <button
             onClick={() => {
               const ctx = canvasCTX;
-              const myImageData = ctx.getImageData(
+              const myImageData = ctx.getImageData(0, 0, 500, 500);
+              // imageData is image object, imageData.data gives Uint8ClampedArray, imageData.height = 500, imageData.width = 500  
+              console.log(myImageData);
+            }}
+          >
+                    Save?
+          </button>
+          <button
+            onClick={(myImageData) => {
+              const ctx = canvasCTX;
+              ctx.clearRect(
                 0,
                 0,
                 canvasRef.current.width,
                 canvasRef.current.height
               );
-              setImage(myImageData);
+              ctx.putImageData(myImageData, 500, 500);
             }}
           >
-                    Save?
+                    Restore
           </button>
         </div>
         <img src={img}>
