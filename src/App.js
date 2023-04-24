@@ -125,7 +125,10 @@ function App() {
         <img src={img}>
         </img>
       </div>
+      
     </>
+
+    
 
   );
 }
