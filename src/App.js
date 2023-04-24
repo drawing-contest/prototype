@@ -168,7 +168,8 @@ function App() {
                 canvasRef.current.width,
                 canvasRef.current.height
               );
-              ctx.fillRect(0, 0, 500, 500);
+              // ctx.fillRect(0, 0, 500, 500);
+              console.log('cleared');
               putImageData(ctx, imageData, 0, 0, 0, 0, 500, 500);
 
               // const ctx = canvasCTX;
