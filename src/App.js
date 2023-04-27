@@ -8,6 +8,11 @@ function App() {
   const [color, setColor] = useState('#000000');
   const [size, setSize] = useState(10);
   const [image, setImage] = useState(null);
+  const [imageState, setImageState] = useState(null);
+  const [realTimeImageState, setRealTimeImageState] = useState(null);
+  const [dummy, setDummy] = useState(null);
+  // const [imagedata, setImageData] = useState();
+  let restoreImageData = null;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -44,7 +49,18 @@ function App() {
     ctx.lineWidth = size;
     // Set the line cap to round
     ctx.lineCap = 'round';
+
+
+    // find whats being saved per stroke
+    // console.log(ctx);
+    //
+
+
     ctx.stroke();
+
+    // real time saving
+    const x = ctx.getImageData(0, 0, 500, 500);
+    setRealTimeImageState(x);
   };
   let img;
   if (img) {
@@ -54,6 +70,37 @@ function App() {
     let img = document.querySelector('#photo');
     img.src = imageUrl;
     console.log(imageUrl);
+  }
+
+  // function used to take in a 
+  function putImageData(
+    ctx,
+    imageData,
+    dx,
+    dy,
+    dirtyX,
+    dirtyY,
+    dirtyWidth,
+    dirtyHeight
+  ) {
+    const data = imageData.data;
+    const height = imageData.height;
+    const width = imageData.width;
+    dirtyX = dirtyX || 0;
+    dirtyY = dirtyY || 0;
+    dirtyWidth = dirtyWidth !== undefined ? dirtyWidth : width;
+    dirtyHeight = dirtyHeight !== undefined ? dirtyHeight : height;
+    const limitBottom = dirtyY + dirtyHeight;
+    const limitRight = dirtyX + dirtyWidth;
+    for (let y = dirtyY; y < limitBottom; y++) {
+      for (let x = dirtyX; x < limitRight; x++) {
+        const pos = y * width + x;
+        ctx.fillStyle = `rgba(${data[pos * 4 + 0]}, ${data[pos * 4 + 1]}, ${
+          data[pos * 4 + 2]
+        }, ${data[pos * 4 + 3] / 255})`;
+        ctx.fillRect(x + dx, y + dy, 1, 1);
+      }
+    }
   }
 
 
@@ -107,20 +154,48 @@ function App() {
           >
                     Clear
           </button>
-          <button
+
+          {/* state version */}
+          <button 
             onClick={() => {
               const ctx = canvasCTX;
-              const myImageData = ctx.getImageData(
+              const restoreImageData = ctx.getImageData(0, 0, 500, 500);
+              setImageState(restoreImageData);
+              console.log(imageState);
+            }}
+          >
+            Save?
+          </button>
+          <button 
+            onClick={() => {
+              // grab canvas
+              const ctx = canvasCTX;
+              // console log image object
+              // clear canvas
+              ctx.clearRect(
                 0,
                 0,
                 canvasRef.current.width,
                 canvasRef.current.height
               );
-              setImage(myImageData);
+              // put saved image object onto canvas
+              putImageData(ctx, imageState, 0, 0, 0, 0, 500, 500);
+
             }}
           >
-                    Save?
+                    Restore Dummy State
           </button>
+
+          <button 
+            onClick={() => {
+              if (realTimeImageState) {
+                console.log(realTimeImageState);
+              }
+            }}
+          >
+                    Check Real Time
+          </button>
+
         </div>
         <img src={img}>
         </img>
