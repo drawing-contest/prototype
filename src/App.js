@@ -9,6 +9,7 @@ function App() {
   const [size, setSize] = useState(10);
   const [image, setImage] = useState(null);
   const [imageState, setImageState] = useState(null);
+  const [realTimeImageState, setRealTimeImageState] = useState(null);
   const [dummy, setDummy] = useState(null);
   // const [imagedata, setImageData] = useState();
   let restoreImageData = null;
@@ -56,6 +57,10 @@ function App() {
 
 
     ctx.stroke();
+
+    // real time saving
+    const x = ctx.getImageData(0, 0, 500, 500);
+    setRealTimeImageState(x);
   };
   let img;
   if (img) {
@@ -161,9 +166,6 @@ function App() {
           >
             Save?
           </button>
-
-
-
           <button 
             onClick={() => {
               // grab canvas
@@ -182,6 +184,16 @@ function App() {
             }}
           >
                     Restore Dummy State
+          </button>
+
+          <button 
+            onClick={() => {
+              if (realTimeImageState) {
+                console.log(realTimeImageState);
+              }
+            }}
+          >
+                    Check Real Time
           </button>
 
         </div>
