@@ -8,6 +8,8 @@ function App() {
   const [color, setColor] = useState('#000000');
   const [size, setSize] = useState(10);
   const [image, setImage] = useState(null);
+  const [imageState, setImageState] = useState(null);
+  const [dummy, setDummy] = useState(null);
   // const [imagedata, setImageData] = useState();
   let restoreImageData = null;
 
@@ -147,24 +149,26 @@ function App() {
           >
                     Clear
           </button>
-          
+
+          {/* state version */}
           <button 
             onClick={() => {
               const ctx = canvasCTX;
-              const imageDataYes = ctx.getImageData(0, 0, 500, 500);
-              // imageData is image object, imageData.data gives Uint8ClampedArray, imageData.height = 500, imageData.width = 500  
-              restoreImageData = imageDataYes;
-              console.log(restoreImageData);
+              const restoreImageData = ctx.getImageData(0, 0, 500, 500);
+              setImageState(restoreImageData);
+              console.log(imageState);
             }}
           >
-                    Save?
+            Save?
           </button>
+
+
+
           <button 
             onClick={() => {
               // grab canvas
               const ctx = canvasCTX;
               // console log image object
-              console.log(restoreImageData);
               // clear canvas
               ctx.clearRect(
                 0,
@@ -173,44 +177,11 @@ function App() {
                 canvasRef.current.height
               );
               // put saved image object onto canvas
-              putImageData(ctx, restoreImageData, 0, 0, 0, 0, 500, 500);
+              putImageData(ctx, imageState, 0, 0, 0, 0, 500, 500);
 
             }}
           >
-                    Restore
-          </button>
-
-
-          <button 
-            onClick={() => {
-              const ctx = canvasCTX;
-              const imageDataYes = ctx.getImageData(0, 0, 500, 500);
-              // imageData is image object, imageData.data gives Uint8ClampedArray, imageData.height = 500, imageData.width = 500  
-              restoreImageData = imageDataYes;
-              console.log(restoreImageData);
-            }}
-          >
-                    Save State?
-          </button>
-          <button 
-            onClick={() => {
-              // grab canvas
-              const ctx = canvasCTX;
-              // console log image object
-              console.log(restoreImageData);
-              // clear canvas
-              ctx.clearRect(
-                0,
-                0,
-                canvasRef.current.width,
-                canvasRef.current.height
-              );
-              // put saved image object onto canvas
-              putImageData(ctx, restoreImageData, 0, 0, 0, 0, 500, 500);
-
-            }}
-          >
-                    Restore State
+                    Restore Dummy State
           </button>
 
         </div>
