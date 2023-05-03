@@ -12,13 +12,14 @@ export function checkError({ data, error }) {
 }
 
 export async function getChat() {
-  return await client
-    .from('chat')
-    .select('*')
-    .order('created_at', { ascending: true })
-    .then(checkError);
+  const response = await client.from('chat').select('*').order('created_at', { ascending: true });
+  return checkError(response);
 }
 
 export async function postChat(message) {
-  return await client.from('chat').insert([{ message }]).then(checkError);
+  const response = await client.from('chat').insert({
+    created_at: new Date().toISOString(),
+    message,
+  });
+  return checkError(response);
 }
