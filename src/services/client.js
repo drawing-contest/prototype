@@ -10,3 +10,15 @@ export function checkError({ data, error }) {
   }
   return data;
 }
+
+export async function getChat() {
+  return await client
+    .from('chat')
+    .select('*')
+    .order('created_at', { ascending: true })
+    .then(checkError);
+}
+
+export async function postChat(message) {
+  return await client.from('chat').insert([{ message }]).then(checkError);
+}
