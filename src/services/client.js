@@ -23,3 +23,11 @@ export async function postChat(message) {
   });
   return checkError(response);
 }
+
+export function updateChatInRealtime(handleInsert) {
+  // const subscription = client.from('chat').on('*', (payload) => callback(payload.new));
+  // return () => {
+  //   subscription.unsubscribe();
+  // };
+  return client.from('chat').on('INSERT', handleInsert).subscribe();
+}
