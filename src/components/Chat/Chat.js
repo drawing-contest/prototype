@@ -10,29 +10,24 @@ async function handleSubmit(e) {
 }
 
 export default function Chat() {
-  // const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
+  // shows loading state while fetching data
   const isLoading = !data.length;
 
   useEffect(() => {
     const fetchChat = async () => {
-      // setLoading(true);
       try {
         const chat = await getChat();
         setData(chat);
-        // console.log('CHAT: ', chat);
 
-        // this is plugged in from copilot, and is calling
-        //  updateChatInRealtime from from client.js,
-        //    which is calling subscribe() from supabase-js
+        // realtime updates (still need to add an unsubscribe function)
         updateChatInRealtime((payload) => {
           setData((prev) => [...prev, payload.new]);
         });
       } catch (error) {
         console.error(error.message);
       }
-      // setLoading(false);
     };
 
     fetchChat();
@@ -43,9 +38,6 @@ export default function Chat() {
       <h1>Chat</h1>
       <div className="chat-window" id="chat-window">
         {isLoading && <div>Loading...</div>}
-        {/* {loading && <div>Loading...</div>}
-        {!loading && data.length === 0 && <div>No messages yet</div>}
-        {!loading && data.length > 0 && ( */}
         <div className="chat-box">
           {data.slice(data.length - 15, data.length).map((chat) => (
             <div key={chat.id} className="chat-message">
@@ -56,7 +48,6 @@ export default function Chat() {
             </div>
           ))}
         </div>
-        {/* )} */}
       </div>
       <form className="new-chat">
         <input type="text" className="new-chat-input" id="new-chat-input" />
