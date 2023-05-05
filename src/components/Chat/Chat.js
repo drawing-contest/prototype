@@ -13,6 +13,8 @@ export default function Chat() {
   // const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
+  const isLoading = !data.length;
+
   useEffect(() => {
     const fetchChat = async () => {
       // setLoading(true);
@@ -40,6 +42,7 @@ export default function Chat() {
     <>
       <h1>Chat</h1>
       <div className="chat-window" id="chat-window">
+        {isLoading && <div>Loading...</div>}
         {/* {loading && <div>Loading...</div>}
         {!loading && data.length === 0 && <div>No messages yet</div>}
         {!loading && data.length > 0 && ( */}
