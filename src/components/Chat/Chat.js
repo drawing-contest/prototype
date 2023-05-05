@@ -47,7 +47,7 @@ export default function Chat() {
         {!loading && data.length === 0 && <div>No messages yet</div>}
         {!loading && data.length > 0 && ( */}
         <div className="chat-box">
-          {data.map((chat) => (
+          {data.slice(data.length - 15, data.length).map((chat) => (
             <div key={chat.id} className="chat-message">
               <div className="chat-message-content">
                 <div className="chat-message-date">{chat.created_at.slice(11, 19)}</div>

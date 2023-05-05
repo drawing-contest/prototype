@@ -1,6 +1,13 @@
+.chat-window {
+}
+
 .chat-box {
   border: 1px dashed grey;
   padding: 5px;
+  max-height: -moz-fit-content;
+  max-height: fit-content;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 
 .chat-message-content {
