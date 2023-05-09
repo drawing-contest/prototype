@@ -1,16 +1,47 @@
+/* eslint-disable no-console */
 import { useEffect, useRef, useState } from 'react';
+import io from 'socket.io-client';
 
 function Drawing() {
   const [mouseData, setMouseData] = useState({ x: 0, y: 0 });
   const canvasRef = useRef(null);
+  const socketRef = useRef(null);
   const [canvasCTX, setCanvasCTX] = useState(null);
   const [color, setColor] = useState('#000000');
   const [size, setSize] = useState(10);
-  const [image, setImage] = useState(null);
+
+  // const [image, setImage] = useState(null);
+  // this ^ was causing CI to fail, so I replaced it with
+  let image = null;
+
   const [imageState, setImageState] = useState(null);
   const [realTimeImageState, setRealTimeImageState] = useState(null);
   // const [imagedata, setImageData] = useState();
 
+  useEffect(() => {
+    socketRef.current = io.connect('http://localhost:3001');
+
+    socketRef.current.on('draw', (data) => {
+      const ctx = canvasCTX;
+
+      // Set the line cap to round
+      ctx.lineCap = 'round';
+
+      // Draw the received line on the canvas
+      ctx.beginPath();
+      ctx.moveTo(data.x0, data.y0);
+      ctx.lineTo(data.x1, data.y1);
+      ctx.strokeStyle = data.color;
+      ctx.lineWidth = data.size;
+      ctx.stroke();
+    });
+
+    return () => {
+      socketRef.current.disconnect();
+    };
+  }, [canvasCTX]);
+
+  // original pre-socket.io useEffect from Connor
   useEffect(() => {
     const canvas = canvasRef.current;
     // console.log(canvasCTX);
@@ -47,39 +78,39 @@ function Drawing() {
     // Set the line cap to round
     ctx.lineCap = 'round';
 
-
     // find whats being saved per stroke
     // console.log(ctx);
     //
-
 
     ctx.stroke();
 
     // real time saving
     const x = ctx.getImageData(0, 0, 500, 500);
     setRealTimeImageState(x);
+
+    // emit updates to server
+    const drawData = {
+      x0: mouseData.x,
+      y0: mouseData.y,
+      x1: e.clientX,
+      y1: e.clientY,
+      color: color,
+      size: size,
+    };
+    socketRef.current.emit('draw', drawData);
   };
   let img;
   if (img) {
     let blob = new Blob([image.buffer], { type: 'image/jpeg' });
     let urlCreator = window.URL || window.webkitURL;
-    let imageUrl = urlCreator.createObjectU (blob);
+    let imageUrl = urlCreator.createObjectU(blob);
     let img = document.querySelector('#photo');
     img.src = imageUrl;
     console.log(imageUrl);
   }
 
-  // function used to take in a 
-  function putImageData(
-    ctx,
-    imageData,
-    dx,
-    dy,
-    dirtyX,
-    dirtyY,
-    dirtyWidth,
-    dirtyHeight
-  ) {
+  // function used to take in a
+  function putImageData(ctx, imageData, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight) {
     const data = imageData.data;
     const height = imageData.height;
     const width = imageData.width;
@@ -92,30 +123,27 @@ function Drawing() {
     for (let y = dirtyY; y < limitBottom; y++) {
       for (let x = dirtyX; x < limitRight; x++) {
         const pos = y * width + x;
-        ctx.fillStyle = `rgba(${data[pos * 4 + 0]}, ${data[pos * 4 + 1]}, ${
-          data[pos * 4 + 2]
-        }, ${data[pos * 4 + 3] / 255})`;
+        ctx.fillStyle = `rgba(${data[pos * 4 + 0]}, ${data[pos * 4 + 1]}, ${data[pos * 4 + 2]}, ${
+          data[pos * 4 + 3] / 255
+        })`;
         ctx.fillRect(x + dx, y + dy, 1, 1);
       }
     }
   }
 
-
   return (
     <>
-      <div>
-        Welcome to my game!
-      </div>
+      <div>Welcome to my game!</div>
       <div>
         <canvas
-          id='drawing-area'
+          id="drawing-area"
           ref={canvasRef}
           onMouseEnter={(e) => setPos(e)}
           onMouseMove={(e) => draw(e)}
           onMouseDown={(e) => setPos(e)}
         ></canvas>
         <div
-          className='control-panel'
+          className="control-panel"
           style={{
             // position: 'absolute',
             top: '0',
@@ -141,19 +169,14 @@ function Drawing() {
           <button
             onClick={() => {
               const ctx = canvasCTX;
-              ctx.clearRect(
-                0,
-                0,
-                canvasRef.current.width,
-                canvasRef.current.height
-              );
+              ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
             }}
           >
-                    Clear
+            Clear
           </button>
 
           {/* state version */}
-          <button 
+          <button
             onClick={() => {
               const ctx = canvasCTX;
               const restoreImageData = ctx.getImageData(0, 0, 500, 500);
@@ -163,47 +186,34 @@ function Drawing() {
           >
             Save?
           </button>
-          <button 
+          <button
             onClick={() => {
               // grab canvas
               const ctx = canvasCTX;
               // console log image object
               // clear canvas
-              ctx.clearRect(
-                0,
-                0,
-                canvasRef.current.width,
-                canvasRef.current.height
-              );
+              ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
               // put saved image object onto canvas
               putImageData(ctx, imageState, 0, 0, 0, 0, 500, 500);
-
             }}
           >
-                    Restore Dummy State
+            Restore Dummy State
           </button>
 
-          <button 
+          <button
             onClick={() => {
               if (realTimeImageState) {
                 console.log(realTimeImageState);
               }
             }}
           >
-                    Check Real Time
+            Check Real Time
           </button>
-
         </div>
-        <img src={img}>
-        </img>
+        <img src={img}></img>
       </div>
-      
     </>
-
-    
-
   );
 }
-  
+
 export default Drawing;
-  
