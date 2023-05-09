@@ -9,7 +9,11 @@ function Drawing() {
   const [canvasCTX, setCanvasCTX] = useState(null);
   const [color, setColor] = useState('#000000');
   const [size, setSize] = useState(10);
-  const [image, setImage] = useState(null);
+
+  // const [image, setImage] = useState(null);
+  // this ^ was causing CI to fail, so I replaced it with
+  let image = null;
+
   const [imageState, setImageState] = useState(null);
   const [realTimeImageState, setRealTimeImageState] = useState(null);
   // const [imagedata, setImageData] = useState();
