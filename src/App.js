@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+/* eslint-disable no-console */
 import Chat from './components/Chat/Chat';
 import Drawing from './components/Drawing/Drawing';
 // useRef allows persistent values between renders
