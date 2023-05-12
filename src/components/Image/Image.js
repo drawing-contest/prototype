@@ -1,13 +1,12 @@
-import { getImage } from "../../services/image";
+// import { getImage } from "../../services/image";
 
 function Image() {
-  const [image, setImage] = useState(null);
   return (
-      <>
-        <img src={'https://bdcdxgfcvjlngohpasik.supabase.co/storage/v1/object/public/image/test.JPG'} />
-      </>
+    <>
+      <img src={'https://bdcdxgfcvjlngohpasik.supabase.co/storage/v1/object/public/image/test.JPG'} />
+    </>
 
-  )
+  );
 }
 
 export default Image;
