@@ -11,7 +11,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ['https://singular-dusk-aa838f.netlify.app', 'http://localhost:3000'],
+    origin: ['https://thunderous-sawine-e521eb.netlify.app', 'http://localhost:3000'],
     methods: ['GET', 'POST'],
   },
 });
@@ -24,7 +24,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('draw', (data) => {
-    // console.log(data);
+    console.log('drawing data: ', data);
     socket.broadcast.emit('draw', data);
   });
 });

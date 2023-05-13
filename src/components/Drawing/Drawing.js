@@ -12,7 +12,9 @@ export default function Drawing() {
   const [imageState, setImageState] = useState(null);
 
   const SERVER_URL =
-    process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : process.env.SERVER_URL;
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3001'
+      : 'https://prototype-backend.herokuapp.com/';
 
   useEffect(() => {
     socketRef.current = io.connect(SERVER_URL);

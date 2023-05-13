@@ -37,6 +37,7 @@ export default function Chat() {
     <>
       <h1>Chat</h1>
       <div className="chat-window" id="chat-window">
+        {/* Loading state */}
         {isLoading && <div>Loading...</div>}
         <div className="chat-box">
           {data.slice(data.length - 15, data.length).map((chat) => (
